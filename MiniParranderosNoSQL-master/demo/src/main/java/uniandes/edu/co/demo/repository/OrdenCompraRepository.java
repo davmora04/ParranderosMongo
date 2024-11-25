@@ -1,6 +1,7 @@
 package uniandes.edu.co.demo.repository;
 
-public class OrdenCompraRepository {
-    //cambio
-    
+import org.springframework.data.mongodb.repository.MongoRepository;
+import uniandes.edu.co.demo.modelo.OrdenCompra;
+
+public interface OrdenCompraRepository extends MongoRepository<OrdenCompra, Integer> {
 }

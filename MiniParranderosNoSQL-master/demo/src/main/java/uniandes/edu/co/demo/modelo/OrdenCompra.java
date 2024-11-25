@@ -1,43 +1,29 @@
 package uniandes.edu.co.demo.modelo;
-import java.util.Date;
 
 import org.springframework.data.annotation.Id;
+import java.util.Date;
+import java.util.List;
 
-import lombok.ToString;
-
-@ToString
 public class OrdenCompra {
     @Id
     private int id;
-    private String precioAcordado; 
-    private long cantidad; 
-    private Date fechaEntrega;
-    private String estado;
+    private String proveedorId;  // ID del proveedor
+    private String sucursalId;   // ID de la sucursal
+    private Date fechaCreacion;  // Fecha de creación (automática)
+    private Date fechaEntrega;   // Fecha esperada de entrega
+    private String estado;       // Estado de la orden
+    private List<DetalleOrdenCompra> detalles; // Detalles de los productos
 
-    public String getPrecioAcordado() {
-        return precioAcordado;
-    }
-    public void setPrecioAcordado(String precioAcordado) {
-        this.precioAcordado = precioAcordado;
-    }
-    public long getCantidad() {
-        return cantidad;
-    }
-    public void setCantidad(long cantidad) {
-        this.cantidad = cantidad;
-    }
-    public Date getFechaEntrega() {
-        return fechaEntrega;
-    }
-    public void setFechaEntrega(Date fechaEntrega) {
+    public OrdenCompra(String proveedorId, String sucursalId, Date fechaEntrega, List<DetalleOrdenCompra> detalles) {
+        this.proveedorId = proveedorId;
+        this.sucursalId = sucursalId;
+        this.fechaCreacion = new Date();  // Fecha de creación actual
         this.fechaEntrega = fechaEntrega;
+        this.detalles = detalles;
+        this.estado = "vigente";  // El estado inicial es "vigente"
     }
-    public String getEstado() {
-        return estado;
-    }
-    public void setEstado(String estado) {
-        this.estado = estado;
-    } 
+
+    // Getters y setters
     public int getId() {
         return id;
     }
@@ -46,15 +32,51 @@ public class OrdenCompra {
         this.id = id;
     }
 
+    public String getProveedorId() {
+        return proveedorId;
+    }
 
-    public OrdenCompra(String precioAcordado, long cantidad, Date fechaEntrega, String estado) {
-        this.precioAcordado = precioAcordado;
-        this.cantidad = cantidad;
+    public void setProveedorId(String proveedorId) {
+        this.proveedorId = proveedorId;
+    }
+
+    public String getSucursalId() {
+        return sucursalId;
+    }
+
+    public void setSucursalId(String sucursalId) {
+        this.sucursalId = sucursalId;
+    }
+
+    public Date getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public Date getFechaEntrega() {
+        return fechaEntrega;
+    }
+
+    public void setFechaEntrega(Date fechaEntrega) {
         this.fechaEntrega = fechaEntrega;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
         this.estado = estado;
     }
-    
-    
-    
-    
+
+    public List<DetalleOrdenCompra> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<DetalleOrdenCompra> detalles) {
+        this.detalles = detalles;
+    }
 }
