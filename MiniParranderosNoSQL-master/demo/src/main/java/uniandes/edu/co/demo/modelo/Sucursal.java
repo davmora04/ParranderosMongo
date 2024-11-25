@@ -3,7 +3,9 @@ package uniandes.edu.co.demo.modelo;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "sucursal")
 public class Sucursal {
     @Id 
     private int id;
@@ -14,6 +16,9 @@ public class Sucursal {
     private List<Ciudad> ciudad; 
     private List<Bodega> bodega;
     private List<OrdenCompra> ordenCompra;
+
+    public Sucursal() {
+    }
 
     public Sucursal(String nombre, int instalacionEnM2, String direccion) {
         this.nombre = nombre;
