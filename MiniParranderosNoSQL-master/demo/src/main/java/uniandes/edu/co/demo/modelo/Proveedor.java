@@ -1,16 +1,21 @@
 package uniandes.edu.co.demo.modelo;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "proveedor")
 public class Proveedor {
     @Id
     private int nit; 
     private String nombre;
     private String direccion;
     private String nombreContacto; 
-    private int telefonoContacto;
+    private String telefonoContacto;
 
-    public Proveedor(int nit, String nombre, String direccion, String nombreContacto, int telefonoContacto) {
+    public Proveedor() {
+    }
+
+    public Proveedor(int nit, String nombre, String direccion, String nombreContacto, String telefonoContacto) {
         this.nit = nit;
         this.nombre = nombre;
         this.direccion = direccion;
@@ -48,11 +53,11 @@ public class Proveedor {
         this.nombreContacto = nombreContacto;
     }
 
-    public int getTelefonoContacto() {
+    public String getTelefonoContacto() {
         return telefonoContacto;
     }
 
-    public void setTelefonoContacto(int telefonoContacto) {
+    public void setTelefonoContacto(String telefonoContacto) {
         this.telefonoContacto = telefonoContacto;
     }
 

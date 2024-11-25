@@ -10,6 +10,10 @@ public class Bodega {
     private String nombre; 
     private int tamanioEnM2; 
     private List<RecepcionProducto> RecepcionProducto;
+
+    public Bodega () {
+
+    }
     
     public Bodega(String nombre, int tamanioEnM2) {
         this.nombre = nombre;
