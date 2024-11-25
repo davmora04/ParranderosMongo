@@ -1,12 +1,12 @@
 package uniandes.edu.co.demo.modelo;
 
 import java.util.Date;
-
 import org.springframework.data.annotation.Id;
 
 public class RecepcionProducto {
     @Id
     private int id;
+    private Producto producto; // Relación con Producto
     private Date fechaRecepcion;
     private int cantidadRecibida;
     private int cantidadMinima; // Nueva información para definir la cantidad mínima requerida
@@ -15,7 +15,8 @@ public class RecepcionProducto {
     public RecepcionProducto() {
     }
 
-    public RecepcionProducto(Date fechaRecepcion, int cantidadRecibida, int cantidadMinima, int costoUnitario) {
+    public RecepcionProducto(Producto producto, Date fechaRecepcion, int cantidadRecibida, int cantidadMinima, int costoUnitario) {
+        this.producto = producto;
         this.fechaRecepcion = fechaRecepcion;
         this.cantidadRecibida = cantidadRecibida;
         this.cantidadMinima = cantidadMinima;
@@ -23,6 +24,14 @@ public class RecepcionProducto {
     }
 
     // Getters y setters
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+    }
+
     public Date getFechaRecepcion() {
         return fechaRecepcion;
     }
