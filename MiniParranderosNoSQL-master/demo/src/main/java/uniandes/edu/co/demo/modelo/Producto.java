@@ -11,7 +11,7 @@ public class Producto {
     private int codigoBarras;
     private String nombre;
     private int precioVenta; 
-    private int UnidadMedida; 
+    private int unidadMedida; 
     private String presentacion;
     private int cantidadPresentacion;
     private Date fechaVencimiento;
@@ -22,7 +22,7 @@ public class Producto {
         this.codigoBarras = codigoBarras;
         this.nombre = nombre;
         this.precioVenta = precioVenta;
-        this.UnidadMedida = unidadMedida;
+        this.unidadMedida = unidadMedida;
         this.presentacion = presentacion;
         this.cantidadPresentacion = cantidadPresentacion;
         this.fechaVencimiento = fechaVencimiento;
@@ -54,11 +54,11 @@ public class Producto {
     }
 
     public int getUnidadMedida() {
-        return UnidadMedida;
+        return unidadMedida;
     }
 
     public void setUnidadMedida(int unidadMedida) {
-        UnidadMedida = unidadMedida;
+        unidadMedida = unidadMedida;
     }
 
     public String getPresentacion() {
