@@ -6,7 +6,7 @@ import java.util.List;
 
 public class OrdenCompra {
     @Id
-    private int id;
+    private String id;
     private String proveedorId;  // ID del proveedor
     private String sucursalId;   // ID de la sucursal
     private Date fechaCreacion;  // Fecha de creación (automática)
@@ -24,11 +24,11 @@ public class OrdenCompra {
     }
 
     // Getters y setters
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
