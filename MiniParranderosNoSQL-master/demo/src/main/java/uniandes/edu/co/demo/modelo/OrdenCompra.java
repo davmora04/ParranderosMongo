@@ -1,10 +1,14 @@
 package uniandes.edu.co.demo.modelo;
 import java.util.Date;
 
+import org.springframework.data.annotation.Id;
+
 import lombok.ToString;
 
 @ToString
 public class OrdenCompra {
+    @Id
+    private int id;
     private String precioAcordado; 
     private long cantidad; 
     private Date fechaEntrega;
@@ -34,6 +38,14 @@ public class OrdenCompra {
     public void setEstado(String estado) {
         this.estado = estado;
     } 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 
     public OrdenCompra(String precioAcordado, long cantidad, Date fechaEntrega, String estado) {
         this.precioAcordado = precioAcordado;
