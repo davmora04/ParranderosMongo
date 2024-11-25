@@ -76,6 +76,7 @@ public class SucursalController {
             return new ResponseEntity<>("Error al eliminar la bodega: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
 }
 
 
