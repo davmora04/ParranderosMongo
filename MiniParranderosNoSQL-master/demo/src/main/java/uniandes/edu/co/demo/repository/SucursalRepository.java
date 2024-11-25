@@ -15,5 +15,12 @@ public interface SucursalRepository extends MongoRepository<Sucursal, Integer> {
     @Query("{ 'nombre' : ?1, 'instalacionEnM2' : ?2, 'direccion' : ?3, 'ciudad' : ?4, 'bodega' : ?5, 'ordenCompra' : ?6}") 
     void crearSucursal(String nombre, int instalacionEnM2, String direccion, List<String> ciudad, List<String> bodega, List<String> ordenCompra);
 
+    // eliminar y crear una sucursal
+    @Query(value = "{ 'bodega.id': ?0 }", delete = true)
+    void eliminarBodegaPorId(int id);
+
+    @Query(value = "{ 'id': ?0 }", fields = "{ 'bodega': 1 }")
+    Sucursal encontrarBodegaEnSucursal(int sucursalId);
+
     
 }
