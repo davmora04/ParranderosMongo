@@ -34,9 +34,12 @@ public class ProductosController {
             List<Producto> productos = productoRepository.findAll();
             return ResponseEntity.ok(productos);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            // Registrar el error para diagnóstico
+            e.printStackTrace(); // Esto te dará más información sobre el problema en la consola
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    
 
     // Obtener un producto por ID
     @GetMapping("/{id}")
