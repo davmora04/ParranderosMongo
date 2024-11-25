@@ -1,0 +1,215 @@
+{
+	"info": {
+		"_postman_id": "2672356e-442c-49f2-aea6-7aef5639f1ee",
+		"name": "noSQL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37920873"
+	},
+	"item": [
+		{
+			"name": "RF1",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": 1,\n  \"nombre\": \"Sucursal Centro\",\n  \"instalacionEnM2\": 1500,\n  \"direccion\": \"Calle 10 #5-30\",\n  \"ciudad\": [],\n  \"bodega\": [],\n  \"ordenCompra\": []\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/sucursal/save/new",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sucursal",
+						"save",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RF2-CREAR",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": 1,\n  \"nombre\": \"Bodega Central\",\n  \"tamanioEnM2\": 500,\n  \"recepcionProducto\": []\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/sucursal/3/bodega",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sucursal",
+						"3",
+						"bodega"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RF2-DELETE",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/sucursal/3/bodega/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sucursal",
+						"3",
+						"bodega",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RF3 - CREAR",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nit\": 12,\n  \"nombre\": \"Proveedor ABC\",\n  \"direccion\": \"Calle 123 #45-67\",\n  \"nombreContacto\": \"Juan Pérez\",\n  \"telefonoContacto\": 3201234567\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/proveedor/save/new",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"proveedor",
+						"save",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RF3 - UPDATE",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nit\": 12,\n  \"nombre\": \"Proveedor ABC - UPDATE\",\n  \"direccion\": \"Calle 123 #45-67\",\n  \"nombreContacto\": \"Juan Pérez\",\n  \"telefonoContacto\": 3201234567\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/proveedor/update/12",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"proveedor",
+						"update",
+						"12"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RF4 - crear",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"codigo\": 101,\n  \"nombre\": \"Perecederos\",\n  \"descripcion\": \"Productos que necesitan refrigeración\",\n  \"caracteristicasDeAlmacenamiento\": \"Mantener a 4°C\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/productos/1001/categoria",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productos",
+						"1001",
+						"categoria"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREAR PRODUCTO",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"codigoBarras\": 1001,\n  \"nombre\": \"Leche Entera\",\n  \"precioVenta\": 4500,\n  \"unidadMedida\": 1000,\n  \"presentacion\": \"Botella de 1 litro\",\n  \"cantidadPresentacion\": 1,\n  \"fechaVencimiento\": \"2024-12-31T00:00:00\",\n  \"categoria\": [\n  ]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/productos/new/save",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productos",
+						"new",
+						"save"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
