@@ -143,44 +143,34 @@ public ResponseEntity<String> crearOrdenCompra(@PathVariable int sucursalId, @Re
         return new ResponseEntity<>("Error al crear la orden de compra: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+// Obtener una orden de compra de una sucursal por ID
+@GetMapping("/{sucursalId}/ordencompra/{ordenCompraId}")
+public ResponseEntity<OrdenCompra> obtenerOrdenCompraPorId(@PathVariable("sucursalId") String sucursalId,
+                                                            @PathVariable("ordenCompraId") String ordenCompraId) {
+    try {
+        // Buscar la sucursal por ID
+        Optional<Sucursal> sucursalOptional = sucursalRepository.findById(Integer.parseInt(sucursalId));
+        if (sucursalOptional.isPresent()) {
+            Sucursal sucursal = sucursalOptional.get();
 
-
-    // Obtener todas las ordenes de compra de una sucursal
-    @GetMapping("/{sucursalId}/ordencompra/listar")
-    public ResponseEntity<List<OrdenCompra>> obtenerOrdenesCompra(@PathVariable int sucursalId) {
-        try {
-            Optional<Sucursal> sucursalOptional = sucursalRepository.findById(sucursalId);
-            if (sucursalOptional.isPresent()) {
-                Sucursal sucursal = sucursalOptional.get();
-                return ResponseEntity.ok(sucursal.getOrdenCompra());
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    // Obtener una orden de compra de una sucursal por ID
-    @GetMapping("/{sucursalId}/ordencompra/{ordenCompraId}")
-    public ResponseEntity<OrdenCompra> obtenerOrdenCompraPorId(@PathVariable("sucursalId") int sucursalId, 
-                                                                @PathVariable("ordenCompraId") String ordenCompraId) {
-        try {
-            Optional<Sucursal> sucursalOptional = sucursalRepository.findById(sucursalId);
-            if (sucursalOptional.isPresent()) {
-                Sucursal sucursal = sucursalOptional.get();
-                List<OrdenCompra> ordenes = sucursal.getOrdenCompra();
-                for (OrdenCompra orden : ordenes) {
-                    if (orden.getId() == ordenCompraId) {
-                        return ResponseEntity.ok(orden);
-                    }
+            // Buscar la orden de compra dentro de las órdenes de la sucursal
+            List<OrdenCompra> ordenes = sucursal.getOrdenCompra();
+            for (OrdenCompra orden : ordenes) {
+                if (orden.getId().equals(ordenCompraId)) {
+                    return ResponseEntity.ok(orden);
                 }
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Orden de compra no encontrada
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Sucursal no encontrada
         }
+    } catch (Exception e) {
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Error en la consulta
     }
+}
+
+
+
+    
 }
