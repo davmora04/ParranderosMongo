@@ -5,8 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uniandes.edu.co.demo.modelo.Bodega;
-import uniandes.edu.co.demo.modelo.Sucursal;
 import uniandes.edu.co.demo.modelo.OrdenCompra;
+import uniandes.edu.co.demo.modelo.Sucursal;
+
 import uniandes.edu.co.demo.repository.SucursalRepository;
 
 import java.util.List;

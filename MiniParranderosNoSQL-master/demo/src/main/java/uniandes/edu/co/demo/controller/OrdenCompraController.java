@@ -31,7 +31,7 @@ public class OrdenCompraController {
     }
     // Método para obtener una orden de compra por ID
     @GetMapping("/listar/{id}")
-    public ResponseEntity<OrdenCompra> obtenerOrdenCompraPorId(@PathVariable("id") int id) {
+    public ResponseEntity<OrdenCompra> obtenerOrdenCompraPorId(@PathVariable("id") String id) {
         try {
             OrdenCompra ordenCompra = ordenCompraRepository.findById(id).orElse(null);
             if (ordenCompra != null) {
