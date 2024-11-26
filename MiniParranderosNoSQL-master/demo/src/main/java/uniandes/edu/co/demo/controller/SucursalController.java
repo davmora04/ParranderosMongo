@@ -5,10 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uniandes.edu.co.demo.modelo.Bodega;
+import uniandes.edu.co.demo.modelo.DetalleOrdenCompra;
 import uniandes.edu.co.demo.modelo.Sucursal;
 import uniandes.edu.co.demo.modelo.OrdenCompra;
+import uniandes.edu.co.demo.modelo.Producto;
 import uniandes.edu.co.demo.repository.SucursalRepository;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,43 +116,46 @@ public class SucursalController {
    
 
     @PostMapping("/{sucursalId}/ordencompra/save")
-    public ResponseEntity<String> crearOrdenCompra(@PathVariable String sucursalId, @RequestBody OrdenCompra ordenCompraRequest) {
-        try {
-            // Buscar la sucursal por ID
-            Optional<Sucursal> sucursalOptional = sucursalRepository.findById(Integer.parseInt(sucursalId));
-            if (sucursalOptional.isPresent()) {
-                Sucursal sucursal = sucursalOptional.get();
-    
-                // Crear la nueva orden de compra con los detalles del request
-                OrdenCompra ordenCompra = new OrdenCompra(
-                    ordenCompraRequest.getProveedorId(),
-                    ordenCompraRequest.getSucursalId(),
-                    ordenCompraRequest.getFechaEntrega(),
-                    ordenCompraRequest.getDetalles()
-                );
-    
-                // Asignar el ID manualmente (this ID should be provided in the request body)
-                if (ordenCompraRequest.getId() != null) {
-                    ordenCompra.setId(ordenCompraRequest.getId()); // Ensure the ID is set from the request
-                }
-    
-                // Añadir la orden de compra a la sucursal
-                List<OrdenCompra> ordenes = sucursal.getOrdenCompra();
-                ordenes.add(ordenCompra);
-                sucursal.setOrdenCompra(ordenes);
-    
-                // Guardar la sucursal con la orden de compra
-                sucursalRepository.save(sucursal);
-                System.out.println("Saving order with ID: " + ordenCompra.getId());
+public ResponseEntity<String> crearOrdenCompra(@PathVariable String sucursalId, @RequestBody OrdenCompra ordenCompraRequest) {
+    try {
+        // Buscar la sucursal por ID
+        Optional<Sucursal> sucursalOptional = sucursalRepository.findById(Integer.parseInt(sucursalId));
+        if (sucursalOptional.isPresent()) {
+            Sucursal sucursal = sucursalOptional.get();
+            
+            // Set up the detalles (embedded products)
+            List<DetalleOrdenCompra> detalles = ordenCompraRequest.getDetalles();
 
-                return new ResponseEntity<>("Orden de compra creada exitosamente", HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<>("Sucursal no encontrada", HttpStatus.NOT_FOUND);
+            // Create the new order with the provided details
+            OrdenCompra ordenCompra = new OrdenCompra(
+                ordenCompraRequest.getProveedorId(),
+                ordenCompraRequest.getSucursalId(),
+                ordenCompraRequest.getFechaEntrega(),
+                detalles
+            );
+
+            // Ensure ID is set manually
+            if (ordenCompraRequest.getId() != null) {
+                ordenCompra.setId(ordenCompraRequest.getId());  // Ensure the ID is set from the request
             }
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error al crear la orden de compra: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+
+            // Add the order to the Sucursal
+            List<OrdenCompra> ordenes = sucursal.getOrdenCompra();
+            ordenes.add(ordenCompra);
+            sucursal.setOrdenCompra(ordenes);
+
+            // Save the updated Sucursal with the embedded OrdenCompra
+            sucursalRepository.save(sucursal);
+
+            return new ResponseEntity<>("Orden de compra creada exitosamente", HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>("Sucursal no encontrada", HttpStatus.NOT_FOUND);
         }
+    } catch (Exception e) {
+        return new ResponseEntity<>("Error al crear la orden de compra: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+}
+
     
 
 // Obtener una orden de compra de una sucursal por ID
@@ -179,6 +186,121 @@ public ResponseEntity<OrdenCompra> obtenerOrdenCompraPorId(@PathVariable("sucurs
     } catch (Exception e) {
         // Si hay un error al hacer la consulta, devolver un error 500
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Error en la consulta
+    }
+}
+
+// In SucursalController
+
+@PostMapping("/{sucursalId}/productos/filtrar")
+public ResponseEntity<List<Producto>> filtrarProductosPorCaracteristicas(
+    @PathVariable String sucursalId, 
+    @RequestParam(value = "precioMin", required = false) Integer precioMin, 
+    @RequestParam(value = "precioMax", required = false) Integer precioMax, 
+    @RequestParam(value = "fechaVencimiento", required = false) String fechaVencimientoStr,
+    @RequestParam(value = "categoria", required = false) String categoria) {
+
+    try {
+        // Parse fechaVencimiento if provided
+        LocalDate fechaVencimiento = null;
+        if (fechaVencimientoStr != null) {
+            fechaVencimiento = LocalDate.parse(fechaVencimientoStr);
+        }
+
+        // Find sucursal by ID
+        Optional<Sucursal> sucursalOptional = sucursalRepository.findById(Integer.parseInt(sucursalId));
+        if (sucursalOptional.isPresent()) {
+            Sucursal sucursal = sucursalOptional.get();
+
+            // Filter productos through OrdenCompra details
+            List<Producto> productosFiltrados = new ArrayList<>();
+            for (OrdenCompra ordenCompra : sucursal.getOrdenCompra()) {
+                for (DetalleOrdenCompra detalle : ordenCompra.getDetalles()) {
+                    Producto producto = detalle.getProducto();
+
+                    boolean match = true;
+
+                    // Check price range
+                    if (precioMin != null && producto.getPrecioVenta() < precioMin) {
+                        match = false;
+                    }
+                    if (precioMax != null && producto.getPrecioVenta() > precioMax) {
+                        match = false;
+                    }
+
+                    // Check expiration date
+                    if (fechaVencimiento != null && producto.getFechaVencimiento().isBefore(fechaVencimiento)) {
+                        match = false;
+                    }
+
+                    // Check category
+                    if (categoria != null && !producto.getCategoria().stream()
+                            .anyMatch(c -> c.getNombre().equalsIgnoreCase(categoria))) {
+                        match = false;
+                    }
+
+                    // If all conditions match, add the product to the list
+                    if (match) {
+                        productosFiltrados.add(producto);
+                    }
+                }
+            }
+
+            return ResponseEntity.ok(productosFiltrados);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    } catch (Exception e) {
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+    }
+}
+
+@GetMapping("/{sucursalId}/productos")
+public ResponseEntity<?> obtenerProductos(@PathVariable int sucursalId,
+                                          @RequestParam(required = false) Double precioMin,
+                                          @RequestParam(required = false) Double precioMax,
+                                          @RequestParam(required = false) String fechaVencimiento,
+                                          @RequestParam(required = false) String categoria) {
+    try {
+        // Retrieve the Sucursal by its ID
+        Optional<Sucursal> sucursalOptional = sucursalRepository.findById(sucursalId);
+        if (!sucursalOptional.isPresent()) {
+            return new ResponseEntity<>("Sucursal no encontrada", HttpStatus.NOT_FOUND);
+        }
+
+        Sucursal sucursal = sucursalOptional.get();
+        List<OrdenCompra> ordenesCompra = sucursal.getOrdenCompra();
+
+        List<Producto> productosFiltrados = new ArrayList<>();
+
+        for (OrdenCompra orden : ordenesCompra) {
+            for (DetalleOrdenCompra detalle : orden.getDetalles()) {
+                Producto producto = detalle.getProducto();
+                if (producto != null) {
+                    // Filter by price
+                    boolean precioValido = (precioMin == null || producto.getPrecioVenta() >= precioMin) &&
+                                           (precioMax == null || producto.getPrecioVenta() <= precioMax);
+
+                    // Filter by expiration date
+                    boolean fechaValida = (fechaVencimiento == null || 
+                                           producto.getFechaVencimiento().isBefore(LocalDate.parse(fechaVencimiento)));
+
+                    // Filter by category, ensure categoria is not null before calling stream()
+                    boolean categoriaValida = (categoria == null || 
+                                               (producto.getCategoria() != null && producto.getCategoria().stream()
+                                                        .anyMatch(c -> c.getNombre().equalsIgnoreCase(categoria))));
+
+                    // If all conditions are met, add to the filtered list
+                    if (precioValido && fechaValida && categoriaValida) {
+                        productosFiltrados.add(producto);
+                    }
+                }
+            }
+        }
+
+        return new ResponseEntity<>(productosFiltrados, HttpStatus.OK);
+
+    } catch (Exception e) {
+        return new ResponseEntity<>("Error al obtener productos", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
 

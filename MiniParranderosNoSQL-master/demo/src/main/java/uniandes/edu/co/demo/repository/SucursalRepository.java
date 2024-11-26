@@ -21,6 +21,6 @@ public interface SucursalRepository extends MongoRepository<Sucursal, Integer> {
 
     @Query(value = "{ 'id': ?0 }", fields = "{ 'bodega': 1 }")
     Sucursal encontrarBodegaEnSucursal(int sucursalId);
-
+    
     
 }
