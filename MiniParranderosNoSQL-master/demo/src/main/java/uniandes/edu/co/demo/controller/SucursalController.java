@@ -111,38 +111,46 @@ public class SucursalController {
 
    
 
-    // Crear una nueva orden de compra dentro de una sucursal
-@PostMapping("/{sucursalId}/ordencompra/save")
-public ResponseEntity<String> crearOrdenCompra(@PathVariable int sucursalId, @RequestBody OrdenCompra ordenCompraRequest) {
-    try {
-        // Buscar la sucursal por ID
-        Optional<Sucursal> sucursalOptional = sucursalRepository.findById(sucursalId);
-        if (sucursalOptional.isPresent()) {
-            Sucursal sucursal = sucursalOptional.get();
+    @PostMapping("/{sucursalId}/ordencompra/save")
+    public ResponseEntity<String> crearOrdenCompra(@PathVariable String sucursalId, @RequestBody OrdenCompra ordenCompraRequest) {
+        try {
+            // Buscar la sucursal por ID
+            Optional<Sucursal> sucursalOptional = sucursalRepository.findById(Integer.parseInt(sucursalId));
+            if (sucursalOptional.isPresent()) {
+                Sucursal sucursal = sucursalOptional.get();
+    
+                // Crear la nueva orden de compra con los detalles del request
+                OrdenCompra ordenCompra = new OrdenCompra(
+                    ordenCompraRequest.getProveedorId(),
+                    ordenCompraRequest.getSucursalId(),
+                    ordenCompraRequest.getFechaEntrega(),
+                    ordenCompraRequest.getDetalles()
+                );
+    
+                // Asignar el ID manualmente (this ID should be provided in the request body)
+                if (ordenCompraRequest.getId() != null) {
+                    ordenCompra.setId(ordenCompraRequest.getId()); // Ensure the ID is set from the request
+                }
+    
+                // Añadir la orden de compra a la sucursal
+                List<OrdenCompra> ordenes = sucursal.getOrdenCompra();
+                ordenes.add(ordenCompra);
+                sucursal.setOrdenCompra(ordenes);
+    
+                // Guardar la sucursal con la orden de compra
+                sucursalRepository.save(sucursal);
+                System.out.println("Saving order with ID: " + ordenCompra.getId());
 
-            // Crear la nueva orden de compra
-            OrdenCompra ordenCompra = new OrdenCompra(
-                ordenCompraRequest.getProveedorId(),
-                ordenCompraRequest.getSucursalId(),
-                ordenCompraRequest.getFechaEntrega(),
-                ordenCompraRequest.getDetalles()
-            );
-
-            // Añadir la orden de compra a la sucursal
-            List<OrdenCompra> ordenes = sucursal.getOrdenCompra();
-            ordenes.add(ordenCompra);
-            sucursal.setOrdenCompra(ordenes);
-
-            // Guardar la sucursal con la orden de compra
-            sucursalRepository.save(sucursal);
-            return new ResponseEntity<>("Orden de compra creada exitosamente", HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>("Sucursal no encontrada", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("Orden de compra creada exitosamente", HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>("Sucursal no encontrada", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al crear la orden de compra: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    } catch (Exception e) {
-        return new ResponseEntity<>("Error al crear la orden de compra: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-}
+    
+
 // Obtener una orden de compra de una sucursal por ID
 @GetMapping("/{sucursalId}/ordencompra/{ordenCompraId}")
 public ResponseEntity<OrdenCompra> obtenerOrdenCompraPorId(@PathVariable("sucursalId") String sucursalId,
@@ -157,18 +165,23 @@ public ResponseEntity<OrdenCompra> obtenerOrdenCompraPorId(@PathVariable("sucurs
             List<OrdenCompra> ordenes = sucursal.getOrdenCompra();
             for (OrdenCompra orden : ordenes) {
                 if (orden.getId().equals(ordenCompraId)) {
+                    // Si se encuentra la orden de compra con el ID, devolverla
                     return ResponseEntity.ok(orden);
                 }
             }
 
+            // Si no se encuentra la orden de compra con ese ID, devolver un error 404
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Orden de compra no encontrada
         } else {
+            // Si no se encuentra la sucursal con ese ID, devolver un error 404
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Sucursal no encontrada
         }
     } catch (Exception e) {
+        // Si hay un error al hacer la consulta, devolver un error 500
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Error en la consulta
     }
 }
+
 
 
 

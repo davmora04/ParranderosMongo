@@ -6,7 +6,7 @@ import java.util.List;
 
 public class OrdenCompra {
     @Id
-    private String id;
+    private String id;  // Change the ID type to String for MongoDB compatibility
     private String proveedorId;  // ID del proveedor
     private String sucursalId;   // ID de la sucursal
     private Date fechaCreacion;  // Fecha de creación (automática)

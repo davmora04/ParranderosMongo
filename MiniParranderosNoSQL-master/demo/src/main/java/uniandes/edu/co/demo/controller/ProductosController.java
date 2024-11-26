@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import uniandes.edu.co.demo.modelo.Producto;
 import uniandes.edu.co.demo.repository.ProductoRepository;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/productos")
@@ -39,7 +43,41 @@ public class ProductosController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-    
+
+    // RFC2 - Filter products based on criteria (price, expiration, category)
+@PostMapping("/productos/filtrar")
+public ResponseEntity<?> filtrarProductos(@RequestBody Map<String, Object> body) {
+
+    // Parse optional fields from JSON body
+    Double minPrecio = body.containsKey("minPrecio") ? ((Number) body.get("minPrecio")).doubleValue() : null;
+    Double maxPrecio = body.containsKey("maxPrecio") ? ((Number) body.get("maxPrecio")).doubleValue() : null;
+    String expirationDateStr = (String) body.get("expirationDateStr");
+    Integer idCategoria = body.containsKey("idCategoria") ? (Integer) body.get("idCategoria") : null;
+    String sucursalId = (String) body.get("idSucursal");
+
+    LocalDate expirationDate = null;
+
+    // Parse expiration date if provided
+    if (expirationDateStr != null) {
+        try {
+            expirationDate = LocalDate.parse(expirationDateStr);
+        } catch (DateTimeParseException e) {
+            return new ResponseEntity<>("Fecha de expiración inválida", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // Fetch the products matching the criteria from MongoDB
+    List<Producto> productos = productoRepository.buscarProductosPorCriterios(
+            minPrecio, maxPrecio, expirationDate, idCategoria, sucursalId);
+
+    if (productos.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    return new ResponseEntity<>(productos, HttpStatus.OK);
+}
+
+
 
     // Obtener un producto por ID
     @GetMapping("/{id}")
