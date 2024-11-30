@@ -1,6 +1,5 @@
 package uniandes.edu.co.demo.repository;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -19,11 +18,7 @@ public interface ProductoRepository extends MongoRepository<Producto, Integer> {
     @Query("{ 'categoria.nombre': ?0 }")
     List<Producto> findProductosByCategoriaNombre(String nombre);
 
-
-}
     // MongoDB query to filter products based on multiple criteria
     @Query("{ 'precioVenta' : { $gte: ?0, $lte: ?1 }, 'fechaVencimiento' : { $lt: ?2 }, 'categoria.id' : ?3, 'sucursalId' : ?4 }")
     List<Producto> buscarProductosPorCriterios(Double minPrecio, Double maxPrecio, LocalDate fechaVencimiento, Integer idCategoria, String sucursalId);
-
-
 }
