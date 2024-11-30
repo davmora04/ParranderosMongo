@@ -1,17 +1,20 @@
 package uniandes.edu.co.demo.modelo;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
 public class DetalleOrdenCompra {
-    private Producto producto;
+
+    private Producto producto;  // Embedded product
     private int cantidad;
     private double precioAcordado;
 
+    // Constructor and getters/setters
     public DetalleOrdenCompra(Producto producto, int cantidad, double precioAcordado) {
         this.producto = producto;
         this.cantidad = cantidad;
         this.precioAcordado = precioAcordado;
     }
 
-    // Getters y setters
     public Producto getProducto() {
         return producto;
     }

@@ -3,6 +3,7 @@ package uniandes.edu.co.demo.modelo;
 import org.springframework.data.annotation.Id;
 
 import java.util.List;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Producto {
@@ -14,11 +15,11 @@ public class Producto {
     private int unidadMedida; 
     private String presentacion;
     private int cantidadPresentacion;
-    private Date fechaVencimiento;
+    private LocalDate fechaVencimiento;
 
     private List<CategoriaProducto> categoria; 
 
-    public Producto(int codigoBarras, String nombre, int precioVenta, int unidadMedida, String presentacion, int cantidadPresentacion, Date fechaVencimiento, List<CategoriaProducto> categoria) {
+    public Producto(int codigoBarras, String nombre, int precioVenta, int unidadMedida, String presentacion, int cantidadPresentacion, LocalDate fechaVencimiento, List<CategoriaProducto> categoria) {
         this.codigoBarras = codigoBarras;
         this.nombre = nombre;
         this.precioVenta = precioVenta;
@@ -58,7 +59,7 @@ public class Producto {
     }
 
     public void setUnidadMedida(int unidadMedida) {
-        unidadMedida = unidadMedida;
+        this.unidadMedida = unidadMedida;
     }
 
     public String getPresentacion() {
@@ -77,11 +78,11 @@ public class Producto {
         this.cantidadPresentacion = cantidadPresentacion;
     }
 
-    public Date getFechaVencimiento() {
+    public LocalDate getFechaVencimiento() {
         return fechaVencimiento;
     }
 
-    public void setFechaVencimiento(Date fechaVencimiento) {
+    public void setFechaVencimiento(LocalDate fechaVencimiento) {
         this.fechaVencimiento = fechaVencimiento;
     }
 

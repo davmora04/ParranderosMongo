@@ -1,29 +1,32 @@
 package uniandes.edu.co.demo.modelo;
 
 import org.springframework.data.annotation.Id;
-import java.util.Date;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
 import java.util.List;
+import java.time.LocalDate;
 
 public class OrdenCompra {
-    @Id
-    private String id;
-    private String proveedorId;  // ID del proveedor
-    private String sucursalId;   // ID de la sucursal
-    private Date fechaCreacion;  // Fecha de creación (automática)
-    private Date fechaEntrega;   // Fecha esperada de entrega
-    private String estado;       // Estado de la orden
-    private List<DetalleOrdenCompra> detalles; // Detalles de los productos
 
-    public OrdenCompra(String proveedorId, String sucursalId, Date fechaEntrega, List<DetalleOrdenCompra> detalles) {
+    @Id
+    private String id;  // Unique order ID
+    private String proveedorId;
+    private String sucursalId;
+    private LocalDate fechaCreacion;
+    private LocalDate fechaEntrega;
+    private String estado;
+    private List<DetalleOrdenCompra> detalles;  // Embed product details here
+
+    // Constructor and getters/setters
+    public OrdenCompra(String proveedorId, String sucursalId, LocalDate fechaEntrega, List<DetalleOrdenCompra> detalles) {
         this.proveedorId = proveedorId;
         this.sucursalId = sucursalId;
-        this.fechaCreacion = new Date();  // Fecha de creación actual
+        this.fechaCreacion = LocalDate.now();
         this.fechaEntrega = fechaEntrega;
+        this.estado = "vigente";
         this.detalles = detalles;
-        this.estado = "vigente";  // El estado inicial es "vigente"
     }
 
-    // Getters y setters
     public String getId() {
         return id;
     }
@@ -48,19 +51,19 @@ public class OrdenCompra {
         this.sucursalId = sucursalId;
     }
 
-    public Date getFechaCreacion() {
+    public LocalDate getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(Date fechaCreacion) {
+    public void setFechaCreacion(LocalDate fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public Date getFechaEntrega() {
+    public LocalDate getFechaEntrega() {
         return fechaEntrega;
     }
 
-    public void setFechaEntrega(Date fechaEntrega) {
+    public void setFechaEntrega(LocalDate fechaEntrega) {
         this.fechaEntrega = fechaEntrega;
     }
 
