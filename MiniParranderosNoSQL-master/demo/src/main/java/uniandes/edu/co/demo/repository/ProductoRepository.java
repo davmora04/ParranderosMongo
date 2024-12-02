@@ -21,4 +21,10 @@ public interface ProductoRepository extends MongoRepository<Producto, Integer> {
     // MongoDB query to filter products based on multiple criteria
     @Query("{ 'precioVenta' : { $gte: ?0, $lte: ?1 }, 'fechaVencimiento' : { $lt: ?2 }, 'categoria.id' : ?3, 'sucursalId' : ?4 }")
     List<Producto> buscarProductosPorCriterios(Double minPrecio, Double maxPrecio, LocalDate fechaVencimiento, Integer idCategoria, String sucursalId);
+
+
+ // RFC1 - Buscar productos por características
+ @Query("{ 'precioVenta': { $gte: ?0, $lte: ?1 }, 'fechaVencimiento': { $gte: ?2, $lte: ?3 }, 'categoria.codigo': ?4 }")
+ List<Producto> findByCaracteristicas(int precioMin, int precioMax, LocalDate fechaExpInf, LocalDate fechaExpSup, int categoriaCodigo);
 }
+

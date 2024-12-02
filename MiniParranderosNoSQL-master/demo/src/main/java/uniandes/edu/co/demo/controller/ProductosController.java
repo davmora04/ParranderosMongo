@@ -1,6 +1,7 @@
 package uniandes.edu.co.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -161,5 +162,30 @@ public ResponseEntity<?> filtrarProductos(@RequestBody Map<String, Object> body)
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    // RFC1 - Mostrar productos por características
+    @GetMapping("/caracteristicas")
+    public ResponseEntity<List<Producto>> mostrarProductosPorCaracteristicas(
+            @RequestParam(required = false) Integer precioMin,
+            @RequestParam(required = false) Integer precioMax,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaExpInf,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaExpSup,
+            @RequestParam(required = false) Integer categoriaCodigo) {
+
+        // Validar parámetros opcionales para evitar valores nulos en la consulta
+        if (precioMin == null) precioMin = 0;
+        if (precioMax == null) precioMax = Integer.MAX_VALUE;
+        if (fechaExpInf == null) fechaExpInf = LocalDate.MIN;
+        if (fechaExpSup == null) fechaExpSup = LocalDate.MAX;
+
+        // Llamar al repositorio con los parámetros proporcionados
+        List<Producto> productos = productoRepository.findByCaracteristicas(precioMin, precioMax, fechaExpInf, fechaExpSup, categoriaCodigo);
+
+        if (productos.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(productos, HttpStatus.OK);
     }
 }
